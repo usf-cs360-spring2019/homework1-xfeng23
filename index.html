@@ -78,11 +78,384 @@
   <section class="section">
     <div class="container content">
       <!-- todo: modify as necessary (or move visualizations to separate pages) -->
-      <h2>Visualization 1</h2>
+      <h2>Visualization1</h2>
+      <script src="https://d3js.org/d3.v5.min.js"></script>
+        <style>
+          .bar {
+            fill: #E15759;
+          }
+          .grid line {
+              stroke: #EAE8E9;
+              stroke-opacity: 0.7;
+              shape-rendering: crispEdges;
+            }
+        </style>
+      <script>
+        // set the dimensions and margins of the graph
+        var margin = {top: 60, right: 20, bottom: 60, left: 200},
+            width = 960 - margin.left - margin.right,
+            height = 500 - margin.top - margin.bottom;
+        // set the ranges
+        var x = d3.scaleBand()
+                  .range([0, width])
+                  .padding(0.1);
+        var y = d3.scaleLinear()
+                  .range([height, 0]);
+        // append the svg object to the body of the page
+        // append a 'group' element to 'svg'
+        // moves the 'group' element to the top left margin
+        var svg = d3.select("body").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform",
+                  "translate(" + margin.left + "," + margin.top + ")");
+        // gridlines in y axis function
+        function make_y_gridlines() {
+            return d3.axisLeft(y)
+                .ticks(8)
+        }
+        // get the data
+        d3.csv("chart1.csv").then(function(data) {
+          console.log(data);
+          data.forEach(function(d) {
+            d.Count = +d.Count;
+          });
+          // format the data
+          let hours = Array.from(data.keys())
+          let count = data.map(function(d){return d.Count})
+          console.log(data.map(function(d){return d.Count}))
 
-      <svg width="100%" height="400" style="background-color: whitesmoke; border: 1px solid black;">
-      </svg>
+          // Scale the range of the data in the domains
+          x.domain(hours);
+          y.domain([0, d3.max(count)]);
+          console.log(d3.max(count.map(function(d) { return d.Count; })))
+          // append the rectangles for the bar chart
+          svg.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return x(d.Hour); })
+            .attr("width", x.bandwidth())
+            .attr("y", function(d) { return y(d.Count); })
+            .attr("height", function(d) { return height - y(d.Count); });
 
+          // add the x Axis
+          svg.append("g")
+            .attr("transform", "translate(0," + height  + ")")
+            .call(d3.axisBottom(x));
+
+          // add the y Axis
+          svg.append("g")
+            .call(d3.axisLeft(y));
+
+          // add the Y gridlines
+          svg.append("g")
+              .attr("class", "grid")
+              .call(make_y_gridlines()
+                  .tickSize(-width)
+                  .tickFormat(""))
+
+          svg.append("text")
+            .attr("font-size", "25px")
+            .attr("transform","translate(" + (width-600) + " ," + (margin.top-100) + ")")
+            .style("text-anchor", "right")
+            .text("Larceny Theft Frequency in San Francisco")
+        });
+
+        svg.append("text")
+           .attr("transform", "rotate(-90)")
+           .attr("y", 150 - margin.left)
+           .attr("x",0 - (height / 2))
+           .attr("dy", "1em")
+           .style("text-anchor", "middle")
+           .text("Count of Incident Number");
+
+         svg.append("text")
+           .attr("transform","translate(" + (width/2) + " ," + (margin.top-70) + ")")
+           .style("text-anchor", "middle")
+           .text("Incident Time");
+        </script>
+    </section>
+    <section class="section">
+      <div class="container content">
+        <h4>Visualization1 Description</h4>
+        <p>
+          Chart 1 visualizes the larceny theft frequency
+          in San Francisco measured by 24 hours per day from 2018/12/1 - 2019/1/1.
+          For example, the second bar represents the theft frequency from 1:00 am to 2:00 am,
+          and the third red bar represents the theft frequency from 2:00 am to 3:00 am.
+          As the bar chart visualized, the peak larceny theft frequency is from
+          18:00 pm to 19:00 pm.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container content">
+        <h2>Visualization2</h2>
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+            <style>
+              .bar2 {
+                fill: #E0C6FF;
+              }
+              .grid line {
+                  stroke: #EAE8E9;
+                  stroke-opacity: 0.7;
+                  shape-rendering: crispEdges;
+              }
+            </style>
+        </script>
+        <script>
+          // set the dimensions and margins of the graph
+          var margin2 = {top2: 100, right2: 20, bottom2: 50, left2: 200},
+            width2 = 960 - margin2.left2 - margin2.right2,
+            height2 = 500 - margin2.top2 - margin2.bottom2;
+
+          var svg2 = d3.select("body").append("svg")
+            .attr("width", width2 + margin2.left2 + margin2.right2)
+            .attr("height", height2 + margin2.top2 + margin2.bottom2)
+            .append("g")
+            .attr("transform","translate(" + margin2.left2 + "," + margin2.top2 + ")");
+            d3.csv("chart2.csv").then(function(data2) {
+              console.log(data2);
+              data2.forEach(function(d) {
+                d.Count = +d.Count;
+              });
+              let days = data2.map(function(d){return d.Day});
+              let count = data2.map(function(d){return d.Count});
+
+              console.log(days)
+              console.log(count)
+
+              // the mapping from data to pixel values
+              var y2 = d3.scaleBand()
+                      .domain(days)
+                      .range([height2, 0])
+                      .padding(0.2);
+              var x2 = d3.scaleLinear()
+                      .domain([0, d3.max(count)])
+                      .range([0, width2]);
+
+              // append the rectangles for the bar chart
+              console.log(data2)
+              svg2.selectAll(".bar2")
+                  .data(data2)
+                  .enter().append("rect")
+                  .attr("class", "bar")
+                  .attr("width", function(d) {return x2(d.Count); })
+                  .attr("y", function(d) { return y2(d.Day); })
+                  .attr("height", y2.bandwidth());
+
+              svg2.selectAll("rect")
+                  .data([[176,122,161], [237,201,72], [89,161,79], [118,183,178], [225,87,89], [242,142,43], [78,121,167]])
+                  .style("fill", function (d, i) {
+                    return "rgb(" + d[0] + ", " + d[1] + ", " + d[2] + ")";
+                  });
+
+
+                // gridlines in x axis function
+                function make_x_gridlines() {
+                    return d3.axisBottom(x2)
+                        .ticks(15)
+                }
+
+              // add the y Axis
+              svg2.append("g")
+                  .call(d3.axisLeft(y2));
+
+              // add the x Axis
+              svg2.append("g")
+                  .attr("transform", "translate(0," + height2 + ")")
+                  .call(d3.axisBottom(x2));
+
+              svg2.append("text")
+                  .attr("font-size", "23px")
+                  .attr("transform","translate(" + (width2-700) + " ," + (-70) + ")")
+                  .style("text-anchor", "right")
+                  .text("Drug Offense Frequency in San Francisco")
+              svg2.append("text")
+                  .attr("transform","translate(" + (width2-870) + " ," + (-20) + ")")
+                  .style("text-anchor", "front")
+                  .text("Incident Day of Week");
+              svg2.append("text")
+                  .attr("transform","translate(" + (width2/2-150) + " ," + (-20) + ")")
+                  .style("text-anchor", "front")
+                  .text("Drug Offense");
+              svg2.append("text")
+                  .attr("transform","translate(" + (width2/2-150) + " ," + (margin2.bottom2+350) + ")")
+                  .style("text-anchor", "front")
+                  .text("Count of Incident Category");
+
+              // gridlines in x axis function
+              function make_x_gridlines() {
+                  return d3.axisBottom(x2)
+                      .ticks(15)
+                  }
+            });
+
+        </script>
+      </div>
+    </section>
+  </section>
+  <section class="section">
+    <div class="container content">
+      <h4>Visualization2 Description</h4>
+      <p>
+        Chart 2 visualizes the drug offense frenquency in San Francisco measured
+        by 7 days per week from 2018/12/1 - 2019/1/1. Each color represent a
+        different day of a week.  For example, the blue bar, which is the drug
+        offense on Sunday is the least in seven days.
+      </p>
+    </div>
+  </section>
+    <section class="section">
+      <div class="container content">
+        <script src="https://d3js.org/d3.v5.min.js"></script>
+            <style>
+              .bar2 {
+                fill: #E0C6FF;
+              }
+              .grid line {
+                  stroke: #EAE8E9;
+                  stroke-opacity: 0.7;
+                  shape-rendering: crispEdges;
+              }
+            </style>
+        </script>
+        <h2>Visualization3</h2>
+        <script>
+        // margin and radius
+        var margin3 = {top3: -300, right3: -350, bottom3: 100, left3:50},
+            width3 = 500 - margin3.right3 - margin3.left3,
+            height3 = 500 - margin3.top3 - margin3.bottom3,
+            radius = width3 / 3;
+
+        // arc generator
+        var arc = d3.arc()
+            .outerRadius(radius - 50)
+            .innerRadius(0);
+
+        var labelArc = d3.arc()
+            .outerRadius(radius -55)
+            .innerRadius(radius -55);
+
+        // pie generator
+        var pie = d3.pie()
+            .sort(null)
+            .value(function(d){return d.Count;});
+
+        // define svg
+        var svg3 = d3.select("body").append("svg")
+            .attr("width", width3)
+            .attr("height", height3)
+            .append("g")
+            .attr("transform", "translate(" + 400 + "," + height3/2 + ")");
+
+        // import the data
+        d3.csv("chart3.csv").then(function(data){
+            console.log(data)
+            //if (error) throw error;
+            // parse the data
+            data.forEach(function(d){
+                  d.Count = +d.Count;
+            });
+
+            // append g elements (arc)
+            var g = svg3.selectAll(".arc")
+                .data(pie(data))
+                .enter().append("g")
+                .attr("class", "arc");
+
+            // append the path of the arc
+            g.append("path")
+                .attr("d", arc)
+                .data([[160,203,232], [255, 190,125], [160,203,232], [250,191,210], [255,190,125], [160,203,232], [211,114,149], [182,153,45], [176,122,161], [215,181,166]])
+                .style("fill", function (d, i) {
+                  return "rgb(" + d[0] + ", " + d[1] + ", " + d[2] + ")";
+                });
+
+            // g.append("text")
+            //     .attr("transform", function(d) {return "translate(" + labelArc.centroid(d) + ")";})
+            //     .attr("dy", ".35em")
+            //     .text(function(d) {return d.data.Count;} );
+
+
+            svg3.append("text")
+                .attr("transform","translate(" + 15.17994472871842 + "," + -250.47504786671647 + ")")
+                .text("Western Addition, 352")
+            svg3.append("text")
+                    .attr("transform","translate(" + 113.6980172666883 + "," + -220.39520935837382 + ")")
+                    .text("Castro/Upper Market, 355")
+            svg3.append("text")
+                    .attr("transform","translate(" + 185.556261510767 + "," + -172.96273996511735 + ")")
+                    .text("Nob Hill, 357")
+            svg3.append("text")
+                    .attr("transform","translate(" + 200.7672309017665 + "," + -110.87641071272 + ")")
+                    .text("Sunset/Parkside, 358")
+            svg3.append("text")
+                    .attr("transform","translate(" + 230.2592886162836 + "," + -20.203963757482015 + ")")
+                    .text("North Beach, 368")
+            svg3.append("text")
+                    .attr("transform","translate(" + 205.89702309178216 + "," + 80.68553308666286 + ")")
+                    .text("Bayview Hunters Point, 651")
+            svg3.append("text")
+                    .attr("transform","translate(" + 120.10194391134374 + "," + 210.63568055612978 + ")")
+                    .text("South of Market, 964")
+            svg3.append("text")
+                    .attr("transform","translate(" + -150.47138484029368 + "," + 250.5524486377327 + ")")
+                    .text("Financial District/South Beach, 1105")
+            svg3.append("text")
+                    .attr("transform","translate(" + -320.32305201275136 + "," + 44.81965468949793 + ")")
+                    .text("Mission, 1243")
+            svg3.append("text")
+                    .attr("transform","translate(" + -200.28383764003073 + "," + -226.27497009723484 + ")")
+                    .text("Tenderloin, 1255")
+
+            svg3.append("text")
+                .attr("font-size", "23px")
+                .attr("transform","translate(" + (width2-900) + " ," + (-330) + ")")
+                .style("text-anchor", "right")
+                .text("Incident Frequency in San Francisco with Demographic Measurement")
+
+            svg3.append("text")
+                .attr("font-size", "18px")
+                .attr("transform","translate(" + (width2-750) + " ," + (-300) + ")")
+                .style("text-anchor", "right")
+                .text("(2018/12/12 - 2019/1/1)")
+              });
+        </script>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container content">
+        <h4>Visualization3 Description</h4>
+        <p>
+          Chart 3 visualizes 10 regions in San Francisco which has the top
+          10 total incident count during 2018/12/1 - 2019/1/1. Each seperate
+          color represents the total count of the incident happened in a
+          different region. For example, the dark yellow part in the pie chart
+          measures that here are 15,372 incidents happened in Financial
+          District/South Beach during 2018/12/1 - 2019/1/1.
+        </p>
+      </div>
+    </section>
+
+    <section class="section">
+    <div class="container content">
+      <h3>Prototypes</h3>
+      <img src="Visualization1.jpg" alt="" width="100%" height="400">
+      <p><br/>
+      <img src="Visualization2.jpg" alt="" width="100%" height="400">
+      <p><br/>
+      <img src="Visualization3.jpg" alt="" width="100%" height="400">
+      <p><br/>
+    </div>
+    </section>
+
+    <section class="section">
+    <div class="container content">
       <h3>Interpretation</h3>
 
       <p>
@@ -157,7 +530,7 @@
           <!-- b level functionality -->
           <tr>
             <td class="has-text-centered">
-              <i class="far fa-fw fa-times-circle has-text-danger"></i>
+              <i class="far fa-fw fa-check-circle has-text-success"></i>
             </td>
 
             <td class="has-text-centered">
@@ -173,7 +546,7 @@
           <!-- a level functionality -->
           <tr>
             <td class="has-text-centered">
-              <i class="far fa-fw fa-times-circle has-text-danger"></i>
+              <i class="far fa-fw fa-check-circle has-text-success"></i>
             </td>
 
             <td class="has-text-centered">
