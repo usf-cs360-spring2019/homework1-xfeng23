@@ -25,7 +25,7 @@
           Visualization Assignment
         </h1>
         <h2 class="subtitle">
-          Xue Feng
+          Full Name
         </h2>
       </div>
     </div>
@@ -150,11 +150,13 @@
             .call(d3.axisLeft(y));
 
           // add the Y gridlines
-          svg.append("g")
+          let grid = svg.append("g")
               .attr("class", "grid")
               .call(make_y_gridlines()
                   .tickSize(-width)
                   .tickFormat(""))
+                  .lower()
+          grid.select('path.domain').remove()
 
           svg.append("text")
             .attr("font-size", "25px")
@@ -283,10 +285,9 @@
                   .style("text-anchor", "front")
                   .text("Drug Offense");
               svg2.append("text")
-                  .attr("transform","translate(" + (width2/2-150) + " ," + (margin2.bottom2+350) + ")")
+                  .attr("transform","translate(" + (width2/2-150) + " ," + (margin2.bottom2+340) + ")")
                   .style("text-anchor", "front")
-                  .text("Count of Incident Category");
-
+                  .text("Drug Offence Frequency");
               // gridlines in x axis function
               function make_x_gridlines() {
                   return d3.axisBottom(x2)
@@ -304,8 +305,8 @@
       <p>
         Chart 2 visualizes the drug offense frenquency in San Francisco measured
         by 7 days per week from 2018/12/1 - 2019/1/1. Each color represent a
-        different day of a week. For example, the green bar, which is the drug
-        offense on Thursday is the least in seven days.
+        different day of a week.  For example, the blue bar, which is the drug
+        offense on Sunday is the least in seven days.
       </p>
     </div>
   </section>
@@ -436,7 +437,7 @@
           10 total incident count during 2018/12/1 - 2019/1/1. Each seperate
           color represents the total count of the incident happened in a
           different region. For example, the dark yellow part in the pie chart
-          measures that here are 1,105 incidents happened in Financial
+          measures that here are 15,372 incidents happened in Financial
           District/South Beach during 2018/12/1 - 2019/1/1.
         </p>
       </div>
